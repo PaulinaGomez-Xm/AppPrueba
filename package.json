@@ -1,0 +1,16 @@
+{
+  "name": "backend-oficina",
+  "version": "1.0.0",
+  "description": "API Node.js - lista de artículos de oficina (actividad VMs)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

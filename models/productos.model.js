@@ -1,22 +1,31 @@
-/**
- * Datos de artículos de oficina (capa modelo).
- * En un proyecto real podría venir de una base de datos.
- */
-const articulos = [
-  { id: 1, nombre: "Resma papel A4", categoria: "Papelería", precio: 4.5, stock: 120 },
-  { id: 2, nombre: "Bolígrafos azul (caja 50)", categoria: "Escritura", precio: 8.9, stock: 40 },
-  { id: 3, nombre: "Grapadora metálica", categoria: "Oficina", precio: 12.0, stock: 15 },
-  { id: 4, nombre: "Carpetas folio (pack 10)", categoria: "Archivo", precio: 6.25, stock: 60 },
-  { id: 5, nombre: "Toner impresora HP", categoria: "Consumibles", precio: 45.0, stock: 8 },
-];
+const { pool } = require("../config/db");
 
-function listarTodos() {
-  return [...articulos];
+async function listarTodos() {
+  const [rows] = await pool.query(
+    "SELECT id, nombre, categoria, precio, stock FROM articulos ORDER BY id ASC"
+  );
+  return rows.map(normalizar);
 }
 
-function obtenerPorId(id) {
+async function obtenerPorId(id) {
   const num = Number(id);
-  return articulos.find((a) => a.id === num) || null;
+  if (!Number.isInteger(num) || num <= 0) return null;
+
+  const [rows] = await pool.query(
+    "SELECT id, nombre, categoria, precio, stock FROM articulos WHERE id = ? LIMIT 1",
+    [num]
+  );
+  return rows.length ? normalizar(rows[0]) : null;
+}
+
+function normalizar(row) {
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    categoria: row.categoria,
+    precio: Number(row.precio),
+    stock: Number(row.stock),
+  };
 }
 
 module.exports = {
